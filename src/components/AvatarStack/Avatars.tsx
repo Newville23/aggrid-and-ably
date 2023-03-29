@@ -14,7 +14,7 @@ const YouAvatar = () => (
       className="bg-gradient-to-r from-cyan-500 to-blue-500
                 h-12 w-12 rounded-full mb-2"
     ></div>
-    <div className="absolute top-14 invisible group-hover:visible px-4 py-2 bg-black rounded-lg text-white text-center">
+    <div className="absolute top-10 invisible group-hover:visible px-4 py-2 bg-black rounded-lg text-white text-center">
       You
     </div>
   </div>

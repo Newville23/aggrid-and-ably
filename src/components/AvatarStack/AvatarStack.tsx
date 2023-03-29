@@ -4,29 +4,22 @@ import type { Types } from 'ably'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { usePresence, useChannel } from '@ably-labs/react-hooks'
 
-import { fakeNames } from './utils/fakeData'
-
 import { REMOVE_USER_AFTER_MILLIS } from './utils/constants'
 import Avatars, { YouAvatar } from './Avatars'
 import Surplus from './Surplus'
 
 dayjs.extend(relativeTime)
 
-const fakeName = () => fakeNames[Math.floor(Math.random() * fakeNames.length)]
-
 const AvatarStack = ({
   channelName,
   clientId,
+  presenceUsers,
 }: {
   channelName: string
   clientId: string
+  presenceUsers: Types.PresenceMessage[]
 }) => {
   const [pastUsers, setPastUsers] = useState<Types.PresenceMessage[]>([])
-
-  // 💡 Connect current user to Ably Presence with a random fake name
-  const [presenceUsers] = usePresence(channelName, {
-    name: fakeName(),
-  })
 
   // 💡 This is used to access Ably's `channel.presence.history`
   const [channel] = useChannel(channelName, () => {})
@@ -70,7 +63,7 @@ const AvatarStack = ({
   ].filter((val, index, arr) => arr.indexOf(val) === index)
 
   return (
-    <div className="w-screen flex justify-between px-6 md:max-w-lg md:-mt-32">
+    <div className="w-screen flex justify-between px-6">
       {/** 💡 "You" avatar 💡 */}
       <YouAvatar />
 
