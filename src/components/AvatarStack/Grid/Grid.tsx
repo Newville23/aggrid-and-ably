@@ -29,14 +29,38 @@ ModuleRegistry.registerModules([
   ClipboardModule,
 ])
 
-const cellStyle = (params: CellClassParams, userspointer: any) => {
+const cellStyle = (
+  params: CellClassParams,
+  presenceUsers: any,
+  clientId: string
+) => {
   let cellStyles = {}
-  if (
-    params.rowIndex === userspointer.rowEndIndex &&
-    userspointer.columnEnd === params.colDef.field
-  ) {
-    cellStyles = { borderColor: 'red', borderStyle: 'dashed' }
+  if (presenceUsers.length >= 1) {
+    const othersOnlineUsers =
+      presenceUsers.filter(
+        (resultItem: Types.PresenceMessage) =>
+          resultItem.action === 'present' && resultItem.clientId !== clientId
+      ) || []
+
+    if (othersOnlineUsers?.length >= 1) {
+      const onlineUsersData = othersOnlineUsers.map(
+        (onlineUser: Types.PresenceMessage) => {
+          return onlineUser.data
+        }
+      )
+
+      const { rowIndex, colDef } = params
+      const userPointerInCell = onlineUsersData.find(
+        (data: any) =>
+          rowIndex === data?.pointer?.rowEndIndex &&
+          colDef.field === data?.pointer?.columnEnd
+      )
+      if (userPointerInCell) {
+        cellStyles = { borderColor: 'red', borderStyle: 'dashed' }
+      }
+    }
   }
+
   return cellStyles
 }
 
@@ -64,158 +88,67 @@ const Grid = ({
   const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), [])
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState<IOlympicData[]>()
-  /*   const [columnDefs, setColumnDefs] = useState<ColDef[]>([
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'athlete',
-      minWidth: 150,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'age',
-      maxWidth: 90,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'country',
-      minWidth: 150,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'year',
-      maxWidth: 90,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'date',
-      minWidth: 150,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'sport',
-      minWidth: 150,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'gold',
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'silver',
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'bronze',
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'total',
-    },
-  ]) */
 
   const columnDefs = useMemo<ColDef[]>(() => {
+    const cellStyleCb = (params: CellClassParams) =>
+      cellStyle(params, presenceUsers, clientId)
+
     return [
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'athlete',
         minWidth: 150,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'age',
         maxWidth: 90,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'country',
         minWidth: 150,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'year',
         maxWidth: 90,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'date',
         minWidth: 150,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'sport',
         minWidth: 150,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'gold',
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'silver',
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'bronze',
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'total',
       },
     ]
-  }, [])
+  }, [presenceUsers])
+
   const defaultColDef = useMemo<ColDef>(() => {
     return {
       flex: 1,
       minWidth: 100,
     }
   }, [])
-
-  useEffect(() => {
-    // gridRef.current!.api.clearRangeSelection();
-    if (presenceUsers.length >= 1) {
-      const othersOnlineUsers =
-        presenceUsers.filter(
-          (resultItem) =>
-            resultItem.action === 'present' && resultItem.clientId !== clientId
-        ) || []
-
-      if (othersOnlineUsers?.length >= 1) {
-        othersOnlineUsers.forEach((user) => {
-          const { pointer: userLatestRange } = user.data
-
-          /*           const userLatestRange ={
-            rowStartIndex: 4,
-            rowEndIndex: 8,
-            columnStart: 'age',
-            columnEnd: 'date',
-          } */
-          if (userLatestRange) {
-            gridRef.current!.api.addCellRange(userLatestRange)
-          }
-        })
-      }
-    }
-  }, [gridReadyForRanges, presenceUsers])
 
   const onRangeSelectionChanged = useCallback(
     (event: RangeSelectionChangedEvent) => {
@@ -237,7 +170,7 @@ const Grid = ({
             action: 'updatePresenceUser',
             payload: { ...currentUserPresence?.data, pointer: pointer },
           })
-          // updatePresenceUser({ ...currentUserPresence?.data, pointer: pointer })
+          updatePresenceUser({ ...currentUserPresence?.data, pointer: pointer })
         }
       }
     },
