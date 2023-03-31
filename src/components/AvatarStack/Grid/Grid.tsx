@@ -1,6 +1,6 @@
 'use strict'
 
-import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { AgGridReact } from '@ag-grid-community/react'
 import '@ag-grid-community/styles/ag-grid.css'
 import '@ag-grid-community/styles/ag-theme-alpine.css'
@@ -10,7 +10,6 @@ import {
   GridReadyEvent,
   ModuleRegistry,
   RangeSelectionChangedEvent,
-  GridParams,
   CellClassParams,
 } from '@ag-grid-community/core'
 import IOlympicData from './types/IOlympicData'
@@ -21,7 +20,6 @@ import { ClipboardModule } from '@ag-grid-enterprise/clipboard'
 import { useChannel } from '@ably-labs/react-hooks'
 import type { Types } from 'ably'
 
-// Register the required feature modules with the Grid
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RangeSelectionModule,
@@ -29,14 +27,37 @@ ModuleRegistry.registerModules([
   ClipboardModule,
 ])
 
-const cellStyle = (params: CellClassParams, userspointer: any) => {
+const cellStyle = (
+  params: CellClassParams,
+  presenceUsers: Types.PresenceMessage[],
+  clientId: string
+) => {
   let cellStyles = {}
-  if (
-    params.rowIndex === userspointer.rowEndIndex &&
-    userspointer.columnEnd === params.colDef.field
-  ) {
-    cellStyles = { borderColor: 'red', borderStyle: 'dashed' }
+  if (presenceUsers.length > 1) {
+    const othersUsersWithCursor =
+      presenceUsers.filter(
+        (user) =>
+          user.action === 'present' &&
+          user.clientId !== clientId &&
+          user.data.cursor
+      ) || []
+
+    if (othersUsersWithCursor.length >= 1) {
+      const cursorCell = othersUsersWithCursor.find(({ data }) => {
+        const { cursor } = data
+        const { colDef, rowIndex } = params
+
+        return (
+          rowIndex === cursor.rowEndIndex && cursor.columnEnd === colDef.field
+        )
+      })
+
+      if (cursorCell) {
+        cellStyles = { borderColor: 'red', borderStyle: 'dashed' }
+      }
+    }
   }
+
   return cellStyles
 }
 
@@ -49,173 +70,74 @@ const Grid = ({
   channelName: string
   clientId: string
   presenceUsers: Types.PresenceMessage[]
-  updatePresenceUser: any
+  updatePresenceUser: (messageOrPresenceObject: any) => void
 }) => {
   const [channel] = useChannel(channelName, () => {})
-  const [gridReadyForRanges, setgridReadyForRanges] = useState(false)
-  const [dummyUsersRanges, updateDummyUsersRanges] = useState({
-    columnEnd: 'country',
-    columnStart: 'country',
-    rowEndIndex: 9,
-    rowStartIndex: 9,
-  })
   const gridRef = useRef<AgGridReact<IOlympicData>>(null)
 
   const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), [])
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState<IOlympicData[]>()
-  /*   const [columnDefs, setColumnDefs] = useState<ColDef[]>([
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'athlete',
-      minWidth: 150,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'age',
-      maxWidth: 90,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'country',
-      minWidth: 150,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'year',
-      maxWidth: 90,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'date',
-      minWidth: 150,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'sport',
-      minWidth: 150,
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'gold',
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'silver',
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'bronze',
-    },
-    {
-      cellStyle: (params: CellClassParams) =>
-        cellStyle(params, dummyUsersRanges),
-      field: 'total',
-    },
-  ]) */
 
   const columnDefs = useMemo<ColDef[]>(() => {
+    const cellStyleCb = (params: CellClassParams) =>
+      cellStyle(params, presenceUsers, clientId)
     return [
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'athlete',
         minWidth: 150,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'age',
         maxWidth: 90,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'country',
         minWidth: 150,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'year',
         maxWidth: 90,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'date',
         minWidth: 150,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'sport',
         minWidth: 150,
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'gold',
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'silver',
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'bronze',
       },
       {
-        cellStyle: (params: CellClassParams) =>
-          cellStyle(params, dummyUsersRanges),
+        cellStyle: cellStyleCb,
         field: 'total',
       },
     ]
-  }, [])
+  }, [presenceUsers])
+
   const defaultColDef = useMemo<ColDef>(() => {
     return {
       flex: 1,
       minWidth: 100,
     }
   }, [])
-
-  useEffect(() => {
-    // gridRef.current!.api.clearRangeSelection();
-    if (presenceUsers.length >= 1) {
-      const othersOnlineUsers =
-        presenceUsers.filter(
-          (resultItem) =>
-            resultItem.action === 'present' && resultItem.clientId !== clientId
-        ) || []
-
-      if (othersOnlineUsers?.length >= 1) {
-        othersOnlineUsers.forEach((user) => {
-          const { pointer: userLatestRange } = user.data
-
-          /*           const userLatestRange ={
-            rowStartIndex: 4,
-            rowEndIndex: 8,
-            columnStart: 'age',
-            columnEnd: 'date',
-          } */
-          if (userLatestRange) {
-            gridRef.current!.api.addCellRange(userLatestRange)
-          }
-        })
-      }
-    }
-  }, [gridReadyForRanges, presenceUsers])
 
   const onRangeSelectionChanged = useCallback(
     (event: RangeSelectionChangedEvent) => {
@@ -224,7 +146,7 @@ const Grid = ({
         if (cellRanges?.length > 0) {
           const lastRange = cellRanges[cellRanges?.length - 1]
           const { endRow, startRow, columns } = lastRange
-          const pointer = {
+          const cursor = {
             rowStartIndex: startRow?.rowIndex,
             rowEndIndex: endRow?.rowIndex,
             columnStart: columns[0].getColId(),
@@ -233,11 +155,8 @@ const Grid = ({
           const currentUserPresence = presenceUsers.find(
             (presenceUser) => presenceUser.clientId === clientId
           )
-          console.log({
-            action: 'updatePresenceUser',
-            payload: { ...currentUserPresence?.data, pointer: pointer },
-          })
-          // updatePresenceUser({ ...currentUserPresence?.data, pointer: pointer })
+
+          updatePresenceUser({ ...currentUserPresence?.data, cursor: cursor })
         }
       }
     },
@@ -249,7 +168,6 @@ const Grid = ({
       .then((resp) => resp.json())
       .then((data: IOlympicData[]) => {
         setRowData(data)
-        setgridReadyForRanges(true)
       })
   }, [])
 
