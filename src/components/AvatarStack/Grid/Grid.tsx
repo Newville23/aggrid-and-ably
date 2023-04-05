@@ -20,6 +20,8 @@ import { MenuModule } from '@ag-grid-enterprise/menu'
 import { ClipboardModule } from '@ag-grid-enterprise/clipboard'
 import { useChannel } from '@ably-labs/react-hooks'
 import type { Types } from 'ably'
+import CustomCellRender from './components/CustomCellRender'
+import getOthersOnlineUsersPointer from '../utils/getOnlineUsersData'
 
 // Register the required feature modules with the Grid
 ModuleRegistry.registerModules([
@@ -28,41 +30,6 @@ ModuleRegistry.registerModules([
   MenuModule,
   ClipboardModule,
 ])
-
-const cellStyle = (
-  params: CellClassParams,
-  presenceUsers: any,
-  clientId: string
-) => {
-  let cellStyles = {}
-  if (presenceUsers.length >= 1) {
-    const othersOnlineUsers =
-      presenceUsers.filter(
-        (resultItem: Types.PresenceMessage) =>
-          resultItem.action === 'present' && resultItem.clientId !== clientId
-      ) || []
-
-    if (othersOnlineUsers?.length >= 1) {
-      const onlineUsersData = othersOnlineUsers.map(
-        (onlineUser: Types.PresenceMessage) => {
-          return onlineUser.data
-        }
-      )
-
-      const { rowIndex, colDef } = params
-      const userPointerInCell = onlineUsersData.find(
-        (data: any) =>
-          rowIndex === data?.pointer?.rowEndIndex &&
-          colDef.field === data?.pointer?.columnEnd
-      )
-      if (userPointerInCell) {
-        cellStyles = { borderColor: 'red', borderStyle: 'dashed' }
-      }
-    }
-  }
-
-  return cellStyles
-}
 
 const Grid = ({
   channelName,
@@ -75,73 +42,77 @@ const Grid = ({
   presenceUsers: Types.PresenceMessage[]
   updatePresenceUser: any
 }) => {
-  const [channel] = useChannel(channelName, () => {})
-  const [gridReadyForRanges, setgridReadyForRanges] = useState(false)
-  const [dummyUsersRanges, updateDummyUsersRanges] = useState({
-    columnEnd: 'country',
-    columnStart: 'country',
-    rowEndIndex: 9,
-    rowStartIndex: 9,
-  })
   const gridRef = useRef<AgGridReact<IOlympicData>>(null)
 
   const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), [])
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState<IOlympicData[]>()
 
-  const columnDefs = useMemo<ColDef[]>(() => {
-    const cellStyleCb = (params: CellClassParams) =>
-      cellStyle(params, presenceUsers, clientId)
+  useEffect(() => {
+    const otherUsersPointer = getOthersOnlineUsersPointer(
+      presenceUsers,
+      clientId
+    )
 
+    if (otherUsersPointer.length >= 1) {
+      var params = {
+        force: true,
+        suppressFlash: true,
+      }
+      gridRef.current!.api.refreshCells(params)
+    }
+  }, [presenceUsers])
+
+  const getColumnDef = () => {
     return [
       {
-        cellStyle: cellStyleCb,
         field: 'athlete',
         minWidth: 150,
+        cellRenderer: CustomCellRender,
       },
       {
-        cellStyle: cellStyleCb,
         field: 'age',
         maxWidth: 90,
+        cellRenderer: CustomCellRender,
       },
       {
-        cellStyle: cellStyleCb,
         field: 'country',
         minWidth: 150,
+        cellRenderer: CustomCellRender,
       },
       {
-        cellStyle: cellStyleCb,
         field: 'year',
         maxWidth: 90,
+        cellRenderer: CustomCellRender,
       },
       {
-        cellStyle: cellStyleCb,
         field: 'date',
         minWidth: 150,
+        cellRenderer: CustomCellRender,
       },
       {
-        cellStyle: cellStyleCb,
         field: 'sport',
         minWidth: 150,
+        cellRenderer: CustomCellRender,
       },
       {
-        cellStyle: cellStyleCb,
         field: 'gold',
+        cellRenderer: CustomCellRender,
       },
       {
-        cellStyle: cellStyleCb,
         field: 'silver',
+        cellRenderer: CustomCellRender,
       },
       {
-        cellStyle: cellStyleCb,
         field: 'bronze',
+        cellRenderer: CustomCellRender,
       },
       {
-        cellStyle: cellStyleCb,
         field: 'total',
+        cellRenderer: CustomCellRender,
       },
     ]
-  }, [presenceUsers])
+  }
 
   const defaultColDef = useMemo<ColDef>(() => {
     return {
@@ -182,7 +153,6 @@ const Grid = ({
       .then((resp) => resp.json())
       .then((data: IOlympicData[]) => {
         setRowData(data)
-        setgridReadyForRanges(true)
       })
   }, [])
 
@@ -192,11 +162,12 @@ const Grid = ({
         <AgGridReact<IOlympicData>
           ref={gridRef}
           rowData={rowData}
-          columnDefs={columnDefs}
+          columnDefs={getColumnDef()}
           defaultColDef={defaultColDef}
           enableRangeSelection={true}
           onGridReady={onGridReady}
           onRangeSelectionChanged={onRangeSelectionChanged}
+          context={{ presenceUsers, clientId }}
         ></AgGridReact>
       </div>
     </div>

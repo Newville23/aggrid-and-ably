@@ -121,3 +121,5 @@ export const colours = [
   'from-rose-400 to-rose-500',
   'from-lime-400 to-lime-500',
 ]
+
+export const colors = ['orange', 'pink', 'green', 'violet', 'rose', 'lime']
