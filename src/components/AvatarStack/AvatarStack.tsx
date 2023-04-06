@@ -10,56 +10,24 @@ import Surplus from './Surplus'
 
 dayjs.extend(relativeTime)
 
+export interface presenceUserWithColor extends Types.PresenceMessage {
+  color: string
+}
+interface AvatarStackProps {
+  channelName: string
+  clientId: string
+  presenceUsers: presenceUserWithColor[]
+}
+
 const AvatarStack = ({
   channelName,
   clientId,
   presenceUsers,
-}: {
-  channelName: string
-  clientId: string
-  presenceUsers: Types.PresenceMessage[]
-}) => {
-  const [pastUsers, setPastUsers] = useState<Types.PresenceMessage[]>([])
-
-  // 💡 This is used to access Ably's `channel.presence.history`
-  const [channel] = useChannel(channelName, () => {})
-
-  // 💡 Effect to set past users from the Ably presence history
-  useEffect(() => {
-    if (presenceUsers.length >= 1) {
-      channel.presence.history((err, result) => {
-        const pastUsers = result?.items.filter(
-          (resultItem) => resultItem.action === 'leave'
-        )
-
-        setPastUsers(pastUsers || [])
-      })
-    }
-  }, [presenceUsers])
-
-  // 💡 Effect to remove users who have left more than 2 minutes ago using the Ably presence history
-  useEffect(() => {
-    if (pastUsers.length > 0) {
-      setTimeout(() => {
-        channel.presence.history((err, result) => {
-          const leftUsers = result?.items.filter(
-            (user) =>
-              user.action === 'leave' &&
-              Math.floor((Date.now() - user.timestamp) / 1000) >
-                REMOVE_USER_AFTER_MILLIS
-          )
-
-          setPastUsers(leftUsers || [])
-        })
-      }, REMOVE_USER_AFTER_MILLIS + 5000)
-    }
-  }, [pastUsers.length])
-
+}: AvatarStackProps) => {
   const otherUsers = [
     ...presenceUsers.filter(
       (presenceUser) => presenceUser.clientId !== clientId
     ),
-    ...pastUsers,
   ].filter((val, index, arr) => arr.indexOf(val) === index)
 
   return (
