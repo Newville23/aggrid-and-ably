@@ -10,18 +10,15 @@ import {
   GridReadyEvent,
   ModuleRegistry,
   RangeSelectionChangedEvent,
-  GridParams,
-  CellClassParams,
 } from '@ag-grid-community/core'
 import IOlympicData from './types/IOlympicData'
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model'
 import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection'
 import { MenuModule } from '@ag-grid-enterprise/menu'
 import { ClipboardModule } from '@ag-grid-enterprise/clipboard'
-import { useChannel } from '@ably-labs/react-hooks'
 import type { Types } from 'ably'
 import CustomCellRender from './components/CustomCellRender'
-import getOthersOnlineUsersPointer from '../utils/getOnlineUsersData'
+import getOthersOnlineUsersPointer from '../../utils/getOnlineUsersData'
 
 // Register the required feature modules with the Grid
 ModuleRegistry.registerModules([
@@ -32,12 +29,10 @@ ModuleRegistry.registerModules([
 ])
 
 const Grid = ({
-  channelName,
   clientId,
   presenceUsers,
   updatePresenceUser,
 }: {
-  channelName: string
   clientId: string
   presenceUsers: Types.PresenceMessage[]
   updatePresenceUser: any
@@ -137,10 +132,6 @@ const Grid = ({
           const currentUserPresence = presenceUsers.find(
             (presenceUser) => presenceUser.clientId === clientId
           )
-          console.log({
-            action: 'updatePresenceUser',
-            payload: { ...currentUserPresence?.data, pointer: pointer },
-          })
           updatePresenceUser({ ...currentUserPresence?.data, pointer: pointer })
         }
       }

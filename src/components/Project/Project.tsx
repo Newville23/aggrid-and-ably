@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 
 import type { ProjectInfo } from '../../Layout'
-import AvatarStack from './AvatarStack'
+import AvatarStack from '../AvatarStack/AvatarStack'
 import { usePresence, useChannel } from '@ably-labs/react-hooks'
-import { fakeNames, colors } from './utils/fakeData'
-import Grid from './Grid'
+import { fakeNames, colors } from '../../utils/fakeData'
+import Grid from '../Grid'
 import type { Types } from 'ably'
 
 const fakeName = () => fakeNames[Math.floor(Math.random() * fakeNames.length)]

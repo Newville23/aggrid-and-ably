@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Types } from 'ably'
 import { UserCircleIcon } from '@heroicons/react/outline'
 
-import { colours } from './utils/fakeData'
-import { MAX_USERS_BEFORE_LIST } from './utils/constants'
+import { colours } from '../../utils/fakeData'
+import { MAX_USERS_BEFORE_LIST } from '../../utils/constants'
 
 import UserInfo from './UserInfo'
 
