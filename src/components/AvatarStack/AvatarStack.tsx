@@ -1,10 +1,6 @@
-import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import type { Types } from 'ably'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { usePresence, useChannel } from '@ably-labs/react-hooks'
-
-import { REMOVE_USER_AFTER_MILLIS } from './utils/constants'
 import Avatars, { YouAvatar } from './Avatars'
 import Surplus from './Surplus'
 
@@ -14,16 +10,11 @@ export interface presenceUserWithColor extends Types.PresenceMessage {
   color: string
 }
 interface AvatarStackProps {
-  channelName: string
   clientId: string
   presenceUsers: presenceUserWithColor[]
 }
 
-const AvatarStack = ({
-  channelName,
-  clientId,
-  presenceUsers,
-}: AvatarStackProps) => {
+const AvatarStack = ({ clientId, presenceUsers }: AvatarStackProps) => {
   const otherUsers = [
     ...presenceUsers.filter(
       (presenceUser) => presenceUser.clientId !== clientId

@@ -1,5 +1,5 @@
 import { ICellRendererParams } from '@ag-grid-community/core'
-import getOthersOnlineUsersPointer from '../../../utils/getOnlineUsersData'
+import getOthersOnlineUsersPointer from '../../../../utils/getOnlineUsersData'
 
 const CustomCellRender = (props: ICellRendererParams) => {
   const { context, rowIndex, colDef } = props

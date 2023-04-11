@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Types } from 'ably'
 
 import useClickOutsideList from './useClickOutsideList'
-import { MAX_USERS_BEFORE_LIST } from './utils/constants'
+import { MAX_USERS_BEFORE_LIST } from '../../utils/constants'
 import UserInfo from './UserInfo'
 
 const Surplus = ({ otherUsers }: { otherUsers: Types.PresenceMessage[] }) => {
