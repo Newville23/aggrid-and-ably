@@ -7,36 +7,9 @@ import InfoCard from './InfoCard'
 import { Types } from 'ably'
 import { SignJWT } from 'jose'
 const clientId = nanoid()
-const example: string = window.location.pathname
-let API_CONFIG: Types.ClientOptions = { clientId }
-switch (example) {
-  case '/avatar-stack':
-    API_CONFIG.key =
-      import.meta.env.VITE_ABLY_KEY_AVATAR_STACK ||
-      import.meta.env.VITE_ABLY_KEY
-    break
-
-  case '/emoji-reactions':
-    API_CONFIG.key =
-      import.meta.env.VITE_ABLY_KEY_EMOJI_REACTIONS ||
-      import.meta.env.VITE_ABLY_KEY
-    break
-
-  case '/claims':
-    API_CONFIG.authCallback = (e, cb) => {
-      CreateJWT(
-        clientId,
-        import.meta.env.VITE_ABLY_KEY_USER_CLAIMS ||
-          import.meta.env.VITE_ABLY_KEY,
-        e.nonce === 'true' ? 'moderator' : 'user'
-      ).then((key) => {
-        cb(null as any, key)
-      })
-    }
-    break
-
-  default:
-    API_CONFIG.key = import.meta.env.VITE_ABLY_KEY
+let API_CONFIG: Types.ClientOptions = {
+  clientId,
+  key: import.meta.env.VITE_ABLY_KEY,
 }
 
 configureAbly(API_CONFIG)
@@ -61,7 +34,6 @@ async function CreateJWT(
 
 export type ProjectInfo = {
   name: string
-  repoNameAndPath: string
   topic: string
 }
 
@@ -69,7 +41,6 @@ const Layout = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [projectInfo, setProjectInfo] = useState<ProjectInfo>({
     name: 'Realtime Examples',
-    repoNameAndPath: 'realtime-examples',
     topic: 'realtime-examples',
   })
 
