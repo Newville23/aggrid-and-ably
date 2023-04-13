@@ -1,16 +1,13 @@
 ## ✈️ Overview
 
-This repository contains all of the code necessary to run and test the Ably examples locally.
+This repository contains - a demo of how you can leverage Ably to show a list of currently online users.
 
-Click on any of the links below to find out more specific information on each example:
+Try out the [live demo](https://examples.ably.dev/avatar-stack) of the avatar stack.
 
-- [Avatar Stack](/src/components/AvatarStack/README.md)
-- [Emoji Reactions](/src/components/EmojiReactions/README.md)
-- [User Claims](/src/components/UserClaims/README.md)
-
-All of the examples are built with the following technology:
+The example is built with the following technology:
 
 - React.js
+- Ag grid
 - Tailwind
 - HeroIcons
 
@@ -24,13 +21,9 @@ To see what else is possible with Ably, check out our other [realtime examples](
 
 ## ⚙️ Running locally
 
-- Fork or clone the [Examples Repo](https://github.com/ably-labs/realtime-examples).
+- Fork or clone the [Examples Repo](https://github.com/Newville23/aggrid-and-ably).
 - Sign up for an account on [Ably](https://ably.com/sign-up?utm_source=ably-labs&utm_medium=github&utm_campaign=realtime-examples) and get an API KEY.
 - Rename `.env.example` to `.env` and fill in your API key in the `VITE_ABLY_KEY` environment variable.
-  (You can use the same key for all examples or you can create different keys for each app.)
-  - `VITE_ABLY_KEY_AVATAR_STACK` for the Avatar Stack
-  - `VITE_ABLY_KEY_EMOJI_REACTIONS` for the Emoji Reactions
-  - `VITE_ABLY_KEY_USER_CLAIMS` for User Claims
 - Run `yarn` or `npm install` to install dependencies.
 - Run `yarn dev` or `npm run dev` and go to http://localhost:5173/
 

@@ -34,7 +34,7 @@ const InfoCard: FunctionComponent<{ projectInfo: ProjectInfo }> = ({
               to experience the demo.{' '}
               <a
                 className="text-slate-300 text-sm hover:underline"
-                href={`https://ably.com/examples/${projectInfo.topic}?utm_source=ably-labs&utm_medium=demo&utm_campaign=${projectInfo.topic}`}
+                href={`https://ably.com`}
                 target="_blank"
               >
                 Learn more.
@@ -51,7 +51,7 @@ const InfoCard: FunctionComponent<{ projectInfo: ProjectInfo }> = ({
               </a>
               <a
                 className="flex justify-center bg-slate-700 text-white rounded py-3"
-                href={`https://github.com/ably-labs/${projectInfo.repoNameAndPath}`}
+                href={'https://github.com/Newville23/aggrid-and-ably'}
               >
                 View source on Github
                 <ExternalLinkIcon className="h-5 w-5 ml-2 text-slate-300" />
@@ -67,7 +67,7 @@ const InfoCard: FunctionComponent<{ projectInfo: ProjectInfo }> = ({
           href={`https://ably.com/examples?utm_source=ably-labs&utm_medium=demo&utm_campaign=${projectInfo.topic}`}
           className="flex text-sm"
         >
-          View all examples
+          View more examples
           <ArrowRightIcon className="h-5 w-5 ml-2 text-orange-600" />
         </a>
       </div>

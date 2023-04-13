@@ -29,9 +29,8 @@ const Project = () => {
   // 💡 Project specific wiring for showing this example.
   useEffect(() => {
     setProjectInfo({
-      name: 'Avatar Stack',
-      repoNameAndPath: 'realtime-examples/tree/main/src/components/AvatarStack',
-      topic: 'avatar-stack',
+      name: 'Ably & Ag-grid',
+      topic: 'ably-aggrid',
     })
   }, [])
 
@@ -63,13 +62,8 @@ const Project = () => {
 
   return (
     <div className="h-screen flex flex-col">
-      <AvatarStack
-        channelName={channelName}
-        clientId={clientId}
-        presenceUsers={usersAvatar}
-      />
+      <AvatarStack clientId={clientId} presenceUsers={usersAvatar} />
       <Grid
-        channelName={channelName}
         clientId={clientId}
         presenceUsers={usersAvatar}
         updatePresenceUser={updatePresenceUser}
