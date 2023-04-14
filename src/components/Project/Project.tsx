@@ -29,7 +29,7 @@ const Project = () => {
   // 💡 Project specific wiring for showing this example.
   useEffect(() => {
     setProjectInfo({
-      name: 'Ably & Ag-grid',
+      name: 'Ably + Ag-grid',
       topic: 'ably-aggrid',
     })
   }, [])
