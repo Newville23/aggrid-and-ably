@@ -1,15 +1,12 @@
 ## ✈️ Overview
 
-This repository contains - a demo of how you can leverage Ably to show a list of currently online users.
+![ably aggrid banner](./ably-aggrid.png)
 
-Try out the [live demo](https://examples.ably.dev/avatar-stack) of the avatar stack.
+This repository showcases how to integrate Ably and Ag-grid into a React app to create a powerful, real-time collaborative data grid. With this example, you can experience a unique, interactive data grid that supports multiple users simultaneously and see their actions in real-time. You can try out the [live demo](https://ag-grid-ably.vercel.app) of the collaborative data grid to see it in action.
 
-The example is built with the following technology:
+The example is built with React.js, Ag-grid, Tailwind, and HeroIcons, making it a great starting point for building your own collaborative data grid. Ably's real-time messaging technology provides a reliable and scalable communication infrastructure, enabling multiple users to collaborate seamlessly.
 
-- React.js
-- Ag grid
-- Tailwind
-- HeroIcons
+To explore other possibilities with Ably, check out their other real-time examples and learn how to build real-time features into your applications with ease.
 
 To see what else is possible with Ably, check out our other [realtime examples](https://ably.com/examples?utm_source=ably-labs&utm_medium=github&utm_campaign=realtime-examples).
 
