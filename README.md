@@ -2,11 +2,13 @@
 
 ![ably aggrid banner](./ably-aggrid.png)
 
-This repository showcases how to integrate Ably and Ag-grid into a React app to create a powerful, real-time collaborative data grid. With this example, you can experience a unique, interactive data grid that supports multiple users simultaneously and see their actions in real-time. You can try out the [live demo](https://ag-grid-ably.vercel.app) of the collaborative data grid to see it in action.
+This repository showcases a demo of a real-time data grid that allows multiple users to collaborate and work on the same grid simultaneously. The example is built using React.js, Ag-grid, Tailwind, and HeroIcons.
 
-The example is built with React.js, Ag-grid, Tailwind, and HeroIcons, making it a great starting point for building your own collaborative data grid. Ably's real-time messaging technology provides a reliable and scalable communication infrastructure, enabling multiple users to collaborate seamlessly.
+By integrating Ably's real-time messaging technology, this example provides a reliable and scalable communication infrastructure, making it possible for multiple users to collaborate seamlessly in real-time.
 
-To explore other possibilities with Ably, check out their other real-time examples and learn how to build real-time features into your applications with ease.
+If you want to see how it works, you can try out the [live demo](https://ag-grid-ably.vercel.app) of the collaborative data grid. Simply open the link and start interacting with the grid to see how multiple users can work together on the same grid.
+
+This example is a great starting point for anyone who wants to build their own collaborative data grid, and Ably's real-time messaging technology can be used to create other real-time features in your applications. To learn more, check out Ably's other real-time examples and discover how you can build real-time features into your applications with ease.
 
 To see what else is possible with Ably, check out our other [realtime examples](https://ably.com/examples?utm_source=ably-labs&utm_medium=github&utm_campaign=realtime-examples).
 
