@@ -11,14 +11,26 @@ interface presenceUserWithColor extends Types.PresenceMessage {
   color: string
 }
 
-const YouAvatar = () => (
+const getUserInitials = (userName: string): string => {
+  const splittedName = userName.split(' ')
+  const [name, familyName] = splittedName
+  return `${name.charAt(0)}${familyName.charAt(0)}`
+}
+
+const YouAvatar = ({
+  currentUser,
+}: {
+  currentUser: presenceUserWithColor | undefined
+}) => (
   <div className="group relative flex flex-col items-center group">
-    <UserCircleIcon className="absolute mt-2 h-8 w-8 opacity-80 text-white pointer-events-none" />
+    <div className="absolute top-3 opacity-80 text-white pointer-events-none">
+      {currentUser ? getUserInitials(currentUser?.data.name) : '...'}
+    </div>
     <div
       className="bg-gradient-to-r from-cyan-500 to-blue-500
                 h-12 w-12 rounded-full mb-2"
     ></div>
-    <div className="absolute top-10 invisible group-hover:visible px-4 py-2 bg-black rounded-lg text-white text-center">
+    <div className="absolute z-10 top-10 invisible group-hover:visible px-4 py-2 bg-black rounded-lg text-white text-center">
       You
     </div>
   </div>
@@ -49,7 +61,9 @@ const Avatars = ({ otherUsers }: { otherUsers: presenceUserWithColor[] }) => {
                 zIndex: otherUsers.length - index,
               }}
             >
-              <UserCircleIcon className="absolute mt-2 h-8 w-8 opacity-80 stroke-white fill-transparent pointer-events-none" />
+              <div className="absolute top-3 opacity-80 text-white stroke-white fill-transparent pointer-events-none">
+                {user ? getUserInitials(user?.data.name) : '...'}
+              </div>
               <div
                 className={`bg-gradient-to-l ${userColorClasses} h-12 w-12 rounded-full mb-2 shadow-[0_0_0_4px_rgba(255,255,255,1)]`}
                 onMouseOver={() => setHoveredClientId(user.clientId)}
