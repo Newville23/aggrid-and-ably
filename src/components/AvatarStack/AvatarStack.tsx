@@ -21,10 +21,14 @@ const AvatarStack = ({ clientId, presenceUsers }: AvatarStackProps) => {
     ),
   ].filter((val, index, arr) => arr.indexOf(val) === index)
 
+  const currentUser = presenceUsers.find(
+    (presenceUser) => presenceUser.clientId === clientId
+  )
+
   return (
     <div className="w-screen flex justify-between px-6">
       {/** 💡 "You" avatar 💡 */}
-      <YouAvatar />
+      <YouAvatar currentUser={currentUser} />
 
       <div className="relative">
         {/** 💡 Stack of first 5 avatars.💡 */}
