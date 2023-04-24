@@ -12,6 +12,8 @@ interface presenceUserWithColor extends Types.PresenceMessage {
 }
 
 const getUserInitials = (userName: string): string => {
+  if (!userName) return '...'
+
   const splittedName = userName.split(' ')
   const [name, familyName] = splittedName
   return `${name.charAt(0)}${familyName.charAt(0)}`
@@ -52,6 +54,7 @@ const Avatars = ({ otherUsers }: { otherUsers: presenceUserWithColor[] }) => {
               : index * HORIZONTAL_SPACING_OFFSET
 
           const userColorClasses = `from-${user.color}-400 to-${user.color}-500`
+
           return (
             <div
               className="absolute right-0 flex flex-col items-center"

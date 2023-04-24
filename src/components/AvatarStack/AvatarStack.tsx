@@ -1,28 +1,23 @@
 import dayjs from 'dayjs'
-import type { Types } from 'ably'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Avatars, { YouAvatar } from './Avatars'
 import Surplus from './Surplus'
+import type onlineUser from '../../types/onlineUser'
 
 dayjs.extend(relativeTime)
 
-export interface presenceUserWithColor extends Types.PresenceMessage {
-  color: string
-}
 interface AvatarStackProps {
   clientId: string
-  presenceUsers: presenceUserWithColor[]
+  onlineUsers: onlineUser[]
 }
 
-const AvatarStack = ({ clientId, presenceUsers }: AvatarStackProps) => {
+const AvatarStack = ({ clientId, onlineUsers }: AvatarStackProps) => {
   const otherUsers = [
-    ...presenceUsers.filter(
-      (presenceUser) => presenceUser.clientId !== clientId
-    ),
+    ...onlineUsers.filter((onlineUser) => onlineUser.clientId !== clientId),
   ].filter((val, index, arr) => arr.indexOf(val) === index)
 
-  const currentUser = presenceUsers.find(
-    (presenceUser) => presenceUser.clientId === clientId
+  const currentUser = onlineUsers.find(
+    (onlineUser) => onlineUser.clientId === clientId
   )
 
   return (

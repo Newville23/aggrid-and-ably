@@ -1,11 +1,13 @@
+import { ABLY_PRESENT_USER_STATUS } from './constants'
 import type { Types } from 'ably'
+import type onlineUser from '../types/onlineUser'
 
-const getOthersOnlineUsersPointer = (presenceUsers: any, clientId: string) => {
-  if (presenceUsers.length > 1) {
+const getOthersOnlineUsersPointer = (users: onlineUser[], clientId: string) => {
+  if (users.length > 1) {
     return (
-      presenceUsers.filter(
+      users.filter(
         (resultItem: Types.PresenceMessage) =>
-          resultItem.action === 'present' &&
+          resultItem.action === ABLY_PRESENT_USER_STATUS &&
           resultItem.clientId !== clientId &&
           resultItem.data.pointer
       ) || []

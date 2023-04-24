@@ -1,16 +1,18 @@
 import { ICellRendererParams } from '@ag-grid-community/core'
 import getOthersOnlineUsersPointer from '../../../../utils/getOnlineUsersData'
 
+import type onlineUser from '../../../../types/onlineUser'
+
 const CustomCellRender = (props: ICellRendererParams) => {
   const { context, rowIndex, colDef } = props
   const cellValue = props.valueFormatted ? props.valueFormatted : props.value
   const othersOnlineUsersPointer = getOthersOnlineUsersPointer(
-    context.presenceUsers,
+    context.onlineUsers,
     context.clientId
   )
 
   const userPointerInCell = othersOnlineUsersPointer.find(
-    (user: any) =>
+    (user: onlineUser) =>
       rowIndex === user.data?.pointer?.rowEndIndex &&
       colDef?.field === user.data?.pointer?.columnEnd
   )
