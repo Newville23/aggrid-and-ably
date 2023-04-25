@@ -1,17 +1,11 @@
 import { useState } from 'react'
-import { Types } from 'ably'
-import { UserCircleIcon } from '@heroicons/react/outline'
-
 import { MAX_USERS_BEFORE_LIST } from '../../utils/constants'
-
+import type onlineUser from '../../types/onlineUser'
 import UserInfo from './UserInfo'
 
-// Move this to itsown folder
-interface presenceUserWithColor extends Types.PresenceMessage {
-  color: string
-}
-
 const getUserInitials = (userName: string): string => {
+  if (!userName) return '...'
+
   const splittedName = userName.split(' ')
   const [name, familyName] = splittedName
   return `${name.charAt(0)}${familyName.charAt(0)}`
@@ -20,7 +14,7 @@ const getUserInitials = (userName: string): string => {
 const YouAvatar = ({
   currentUser,
 }: {
-  currentUser: presenceUserWithColor | undefined
+  currentUser: onlineUser | undefined
 }) => (
   <div className="group relative flex flex-col items-center group">
     <div className="absolute top-3 opacity-80 text-white pointer-events-none">
@@ -36,7 +30,7 @@ const YouAvatar = ({
   </div>
 )
 
-const Avatars = ({ otherUsers }: { otherUsers: presenceUserWithColor[] }) => {
+const Avatars = ({ otherUsers }: { otherUsers: onlineUser[] }) => {
   const [hoveredClientId, setHoveredClientId] = useState<string | null>(null)
 
   return (
@@ -52,6 +46,7 @@ const Avatars = ({ otherUsers }: { otherUsers: presenceUserWithColor[] }) => {
               : index * HORIZONTAL_SPACING_OFFSET
 
           const userColorClasses = `from-${user.color}-400 to-${user.color}-500`
+
           return (
             <div
               className="absolute right-0 flex flex-col items-center"
@@ -73,7 +68,7 @@ const Avatars = ({ otherUsers }: { otherUsers: presenceUserWithColor[] }) => {
                 <div className="absolute top-0 h-12 w-12 rounded-full mb-2 bg-white opacity-80 pointer-events-none" />
               ) : null}
               {hoveredClientId === user.clientId ? (
-                <div className="absolute top-14 min-w-[175px] px-4 py-2 bg-black rounded-lg text-white">
+                <div className="absolute top-10 truncate right-8 min-w-[175px] px-4 py-2 bg-black rounded-lg text-white">
                   <UserInfo user={user} />
                 </div>
               ) : null}

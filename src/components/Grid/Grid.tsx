@@ -16,9 +16,9 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection'
 import { MenuModule } from '@ag-grid-enterprise/menu'
 import { ClipboardModule } from '@ag-grid-enterprise/clipboard'
-import type { Types } from 'ably'
 import CustomCellRender from './components/CustomCellRender'
 import getOthersOnlineUsersPointer from '../../utils/getOnlineUsersData'
+import type onlineUser from '../../types/onlineUser'
 
 // Register the required feature modules with the Grid
 ModuleRegistry.registerModules([
@@ -30,11 +30,11 @@ ModuleRegistry.registerModules([
 
 const Grid = ({
   clientId,
-  presenceUsers,
+  onlineUsers,
   updatePresenceUser,
 }: {
   clientId: string
-  presenceUsers: Types.PresenceMessage[]
+  onlineUsers: onlineUser[]
   updatePresenceUser: any
 }) => {
   const gridRef = useRef<AgGridReact<IOlympicData>>(null)
@@ -44,19 +44,15 @@ const Grid = ({
   const [rowData, setRowData] = useState<IOlympicData[]>()
 
   useEffect(() => {
-    const otherUsersPointer = getOthersOnlineUsersPointer(
-      presenceUsers,
-      clientId
-    )
+    const otherUsersPointer = getOthersOnlineUsersPointer(onlineUsers, clientId)
 
     if (otherUsersPointer.length >= 1) {
       var params = {
         force: true,
-        suppressFlash: true,
       }
       gridRef.current!.api.refreshCells(params)
     }
-  }, [presenceUsers])
+  }, [onlineUsers])
 
   const getColumnDef = () => {
     return [
@@ -129,14 +125,14 @@ const Grid = ({
             columnStart: columns[0].getColId(),
             columnEnd: columns[columns.length - 1].getColId(),
           }
-          const currentUserPresence = presenceUsers.find(
+          const currentUserPresence = onlineUsers.find(
             (presenceUser) => presenceUser.clientId === clientId
           )
           updatePresenceUser({ ...currentUserPresence?.data, pointer: pointer })
         }
       }
     },
-    []
+    [onlineUsers]
   )
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
@@ -158,7 +154,7 @@ const Grid = ({
           enableRangeSelection={true}
           onGridReady={onGridReady}
           onRangeSelectionChanged={onRangeSelectionChanged}
-          context={{ presenceUsers, clientId }}
+          context={{ onlineUsers, clientId }}
         ></AgGridReact>
       </div>
     </div>
