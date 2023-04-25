@@ -49,7 +49,6 @@ const Grid = ({
     if (otherUsersPointer.length >= 1) {
       var params = {
         force: true,
-        suppressFlash: true,
       }
       gridRef.current!.api.refreshCells(params)
     }
