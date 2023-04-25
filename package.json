@@ -19,6 +19,7 @@
     "@ag-grid-enterprise/range-selection": "^29.2.0",
     "@faker-js/faker": "^7.6.0",
     "@heroicons/react": "^1.0.6",
+    "dayjs": "^1.11.4",
     "jose": "^4.9.3",
     "nanoid": "^4.0.0",
     "random-words": "^1.2.0",
