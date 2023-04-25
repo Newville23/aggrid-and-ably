@@ -4,13 +4,13 @@ import { useOutletContext } from 'react-router-dom'
 import type { ProjectInfo } from '../../Layout'
 import AvatarStack from '../AvatarStack/AvatarStack'
 import { usePresence, useChannel } from '@ably-labs/react-hooks'
-import { fakeNames, colors } from '../../utils/fakeData'
+import { colors } from '../../utils/fakeData'
+import { faker } from '@faker-js/faker'
 import Grid from '../Grid'
 import { ABLY_PRESENT_USER_STATUS } from '../../utils/constants'
 import type { Types } from 'ably'
 import type onlineUser from '../../types/onlineUser'
 
-const fakeName = () => fakeNames[Math.floor(Math.random() * fakeNames.length)]
 const getRdmColor = () => colors[Math.floor(Math.random() * colors.length)]
 
 const Project = () => {
@@ -22,7 +22,7 @@ const Project = () => {
 
   // 💡 Connect current user to Ably Presence with a random fake name
   const [presenceUsers, updatePresenceUser] = usePresence(channelName, {
-    name: fakeName(),
+    name: faker.name.fullName(),
   })
 
   const [channel] = useChannel(channelName, () => {})
