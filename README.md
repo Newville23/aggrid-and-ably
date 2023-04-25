@@ -26,14 +26,10 @@ To see what else is possible with Ably, check out our other [realtime examples](
 - Run `yarn` or `npm install` to install dependencies.
 - Run `yarn dev` or `npm run dev` and go to http://localhost:5173/
 
-## 🤔 Support, feedback and troubleshooting
+## 🔗 References
 
-- [Create a GitHub Issue](https://github.com/ably-labs/realtime-examples/issues)
-- [Join our Discord server](https://discord.gg/q89gDHZcBK)
-- [Follow us on Twitter](https://twitter.com/ablyrealtime)
-- [Use our SDKs](https://github.com/ably/)
-- [Visit our website](https://ably.com?utm_source=ably-labs&utm_medium=github&utm_campaign=realtime-examples)
+- [Ably real-time examples](https://ably.com/examples)
+- [Ag grid](https://ag-grid.com/react-data-grid/)
+- [Ably SDKs](https://github.com/ably/)
 
----
 
-[![Ably logo](https://static.ably.dev/badge-black.svg?serverless-websockets-quest)](https://ably.com?utm_source=ably-labs&utm_medium=github&utm_campaign=realtime-examples)
