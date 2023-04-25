@@ -1,10 +1,6 @@
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import Avatars, { YouAvatar } from './Avatars'
 import Surplus from './Surplus'
 import type onlineUser from '../../types/onlineUser'
-
-dayjs.extend(relativeTime)
 
 interface AvatarStackProps {
   clientId: string
