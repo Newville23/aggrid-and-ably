@@ -32,4 +32,8 @@ To see what else is possible with Ably, check out our other [realtime examples](
 - [Ag grid](https://ag-grid.com/react-data-grid/)
 - [Ably SDKs](https://github.com/ably/)
 
+## 🙌🏽 Credits:
+
+This would not be possible without the fantastic Ably and Ag grid documentations and the well explained examples from [Ably-labs](https://github.com/ably-labs/realtime-examples)!
+
 
