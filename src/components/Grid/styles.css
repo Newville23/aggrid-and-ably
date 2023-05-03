@@ -11,3 +11,12 @@
 .other-user-pointer {
   background-color: sandybrown !important;
 }
+
+.ably-grid .ag-theme-alpine .ag-cell {
+  padding: 0;
+  overflow: inherit;
+}
+
+.ably-grid .ag-theme-alpine .ag-row {
+  z-index: 0;
+}
