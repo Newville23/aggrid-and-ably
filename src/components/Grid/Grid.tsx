@@ -144,7 +144,7 @@ const Grid = ({
   }, [])
 
   return (
-    <div style={containerStyle}>
+    <div className="ably-grid" style={containerStyle}>
       <div style={gridStyle} className="ag-theme-alpine">
         <AgGridReact<IOlympicData>
           ref={gridRef}
