@@ -1,18 +1,7 @@
-import { useEffect, useState } from 'react'
-import { Outlet, useSearchParams } from 'react-router-dom'
-import { nanoid } from 'nanoid'
-import randomWords from 'random-words'
-import { configureAbly } from '@ably-labs/react-hooks'
+import { useState } from 'react'
+import { Outlet } from 'react-router-dom'
 import InfoCard from './InfoCard'
-import { Types } from 'ably'
 import { SignJWT } from 'jose'
-const clientId = nanoid()
-let API_CONFIG: Types.ClientOptions = {
-  clientId,
-  key: import.meta.env.VITE_ABLY_KEY,
-}
-
-configureAbly(API_CONFIG)
 
 async function CreateJWT(
   clientId: string,
@@ -38,24 +27,14 @@ export type ProjectInfo = {
 }
 
 const Layout = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
   const [projectInfo, setProjectInfo] = useState<ProjectInfo>({
     name: 'Realtime Examples',
     topic: 'realtime-examples',
   })
 
-  const channelId =
-    searchParams.get('id') || randomWords({ exactly: 3, join: '-' })
-
-  useEffect(() => {
-    if (!searchParams.get('id')) {
-      setSearchParams({ id: channelId }, { replace: true })
-    }
-  }, [channelId])
-
   return (
     <main className="h-screen flex flex-col pt-2 justify-center font-sans bg-slate-50">
-      <Outlet context={{ channelName: channelId, clientId, setProjectInfo }} />
+      <Outlet context={{ setProjectInfo }} />
       <div className="fixed bottom-0 md:absolute md:left-12 md:bottom-12">
         <InfoCard projectInfo={projectInfo} />
       </div>
