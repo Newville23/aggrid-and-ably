@@ -5,7 +5,7 @@ import useClickOutsideList from './useClickOutsideList'
 import { MAX_USERS_BEFORE_LIST } from '../../utils/constants'
 import UserInfo from './UserInfo'
 
-const Surplus = ({ otherUsers }: { otherUsers: Types.PresenceMessage[] }) => {
+const Surplus = ({ otherUsers }: { otherUsers: object[] }) => {
   const [showList, setShowList] = useState(false)
   const { listRef, plusButtonRef } = useClickOutsideList(() =>
     setShowList(false)

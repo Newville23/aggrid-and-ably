@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
-
+import { useSpace } from '@ably/spaces/react'
 import type { ProjectInfo } from '../../Layout'
 import AvatarStack from '../AvatarStack/AvatarStack'
 import { usePresence, useChannel } from '@ably-labs/react-hooks'
@@ -14,19 +14,13 @@ import type onlineUser from '../../types/onlineUser'
 const getRdmColor = () => colors[Math.floor(Math.random() * colors.length)]
 
 const Project = () => {
-  const { channelName, clientId, setProjectInfo } = useOutletContext<{
-    channelName: string
-    clientId: string
+  const { setProjectInfo } = useOutletContext<{
     setProjectInfo: (projectInfo: ProjectInfo) => void
   }>()
 
-  // 💡 Connect current user to Ably Presence with a random fake name
-  const [presenceUsers, updatePresenceUser] = usePresence(channelName, {
-    name: faker.name.fullName(),
+  const { space } = useSpace((update) => {
+    console.log(update)
   })
-
-  const [channel] = useChannel(channelName, () => {})
-  const [onlineUsers, setOnlineUsers] = useState<onlineUser[]>([])
 
   // 💡 Project specific wiring for showing this example.
   useEffect(() => {
@@ -35,6 +29,19 @@ const Project = () => {
       topic: 'ably-aggrid',
     })
   }, [])
+
+  if (space) {
+    space.enter({ userName: faker.name.fullName(), avatarColor: getRdmColor() })
+  }
+
+  /*   // 💡 Connect current user to Ably Presence with a random fake name
+  const [presenceUsers, updatePresenceUser] = usePresence(channelName, {
+    name: faker.name.fullName(),
+  })
+
+  const [channel] = useChannel(channelName, () => {})
+  const [onlineUsers, setOnlineUsers] = useState<onlineUser[]>([])
+
 
   useEffect(() => {
     if (presenceUsers.length >= 1) {
@@ -61,16 +68,16 @@ const Project = () => {
       )
       setOnlineUsers(updatedOnlineUsers)
     }
-  }, [presenceUsers])
+  }, [presenceUsers]) */
 
   return (
     <div className="h-screen flex flex-col">
-      <AvatarStack clientId={clientId} onlineUsers={onlineUsers} />
-      <Grid
+      <AvatarStack />
+      {/*     <Grid
         clientId={clientId}
         onlineUsers={onlineUsers}
         updatePresenceUser={updatePresenceUser}
-      />
+      /> */}
     </div>
   )
 }
