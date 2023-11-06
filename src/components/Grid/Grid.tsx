@@ -1,6 +1,6 @@
 'use strict'
 
-import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { AgGridReact } from '@ag-grid-community/react'
 import '@ag-grid-community/styles/ag-grid.css'
 import '@ag-grid-community/styles/ag-theme-alpine.css'
@@ -17,8 +17,7 @@ import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection'
 import { MenuModule } from '@ag-grid-enterprise/menu'
 import { ClipboardModule } from '@ag-grid-enterprise/clipboard'
 import CustomCellRender from './components/CustomCellRender'
-import getOthersOnlineUsersPointer from '../../utils/getOnlineUsersData'
-import type onlineUser from '../../types/onlineUser'
+import { useLocations } from '@ably/spaces/react'
 
 // Register the required feature modules with the Grid
 ModuleRegistry.registerModules([
@@ -28,31 +27,25 @@ ModuleRegistry.registerModules([
   ClipboardModule,
 ])
 
-const Grid = ({
-  clientId,
-  onlineUsers,
-  updatePresenceUser,
-}: {
-  clientId: string
-  onlineUsers: onlineUser[]
-  updatePresenceUser: any
-}) => {
-  const gridRef = useRef<AgGridReact<IOlympicData>>(null)
+const GRID_COMPONENT = 'grid'
 
-  const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), [])
-  const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
-  const [rowData, setRowData] = useState<IOlympicData[]>()
-
-  useEffect(() => {
-    const otherUsersPointer = getOthersOnlineUsersPointer(onlineUsers, clientId)
-
-    if (otherUsersPointer.length >= 1) {
+const Grid = () => {
+  const { update: updateUserLocation } = useLocations('update', () => {
+    if (gridRef.current?.api) {
       var params = {
         force: true,
       }
-      gridRef.current!.api.refreshCells(params)
+      gridRef.current.api.refreshCells(params)
     }
-  }, [onlineUsers])
+  })
+
+  {
+    /** 💡 basic Ag-grid configuration 💡 */
+  }
+  const gridRef = useRef<AgGridReact<IOlympicData>>(null)
+  const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), [])
+  const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
+  const [rowData, setRowData] = useState<IOlympicData[]>()
 
   const getColumnDef = () => {
     return [
@@ -113,26 +106,24 @@ const Grid = ({
   }, [])
 
   const onRangeSelectionChanged = useCallback(
-    (event: RangeSelectionChangedEvent) => {
-      if (event.finished && event.started) {
-        const cellRanges = gridRef.current!.api.getCellRanges() || []
-        if (cellRanges?.length > 0) {
+    async (event: RangeSelectionChangedEvent) => {
+      if (event.finished && event.started && gridRef.current?.api) {
+        const cellRanges = gridRef.current.api.getCellRanges()
+        if (updateUserLocation && cellRanges && cellRanges.length > 0) {
           const lastRange = cellRanges[cellRanges?.length - 1]
           const { endRow, startRow, columns } = lastRange
-          const pointer = {
+          const userGridLocation = {
+            component: GRID_COMPONENT,
             rowStartIndex: startRow?.rowIndex,
             rowEndIndex: endRow?.rowIndex,
             columnStart: columns[0].getColId(),
             columnEnd: columns[columns.length - 1].getColId(),
           }
-          const currentUserPresence = onlineUsers.find(
-            (presenceUser) => presenceUser.clientId === clientId
-          )
-          updatePresenceUser({ ...currentUserPresence?.data, pointer: pointer })
+          await updateUserLocation(userGridLocation)
         }
       }
     },
-    [onlineUsers]
+    []
   )
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
@@ -154,7 +145,6 @@ const Grid = ({
           enableRangeSelection={true}
           onGridReady={onGridReady}
           onRangeSelectionChanged={onRangeSelectionChanged}
-          context={{ onlineUsers, clientId }}
         ></AgGridReact>
       </div>
     </div>

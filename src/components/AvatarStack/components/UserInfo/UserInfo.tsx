@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react'
-import type { Types } from 'ably'
+import { type SpaceMember } from '@ably/spaces'
 
-const UserInfo: FunctionComponent<{ user: any }> = ({ user }) => {
+const UserInfo: FunctionComponent<{ user: SpaceMember }> = ({ user }) => {
   const { profileData, lastEvent } = user
   return (
     <>

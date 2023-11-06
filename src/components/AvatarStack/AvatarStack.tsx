@@ -1,21 +1,16 @@
-import Avatars, { YouAvatar } from './Avatars'
-import Surplus from './Surplus'
-import type onlineUser from '../../types/onlineUser'
-import { useMembers } from '@ably/spaces/react'
+import Avatars, { YouAvatar } from './components/Avatars'
+import Surplus from './components/Surplus'
 
 const AvatarStack = () => {
-  const { self, others } = useMembers()
   return (
     <div className="w-screen flex justify-between px-6">
       {/** 💡 "You" avatar 💡 */}
-      <YouAvatar selfUser={self} />
-
+      <YouAvatar />
       <div className="relative">
         {/** 💡 Stack of first 5 avatars.💡 */}
-        <Avatars otherUsers={others} />
-
+        <Avatars />
         {/** 💡 Dropdown list of surplus users 💡 */}
-        <Surplus otherUsers={others} />
+        <Surplus />
       </div>
     </div>
   )
