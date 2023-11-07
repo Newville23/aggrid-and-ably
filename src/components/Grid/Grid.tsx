@@ -10,6 +10,7 @@ import {
   GridReadyEvent,
   ModuleRegistry,
   RangeSelectionChangedEvent,
+  RefreshCellsParams,
 } from '@ag-grid-community/core'
 import IOlympicData from './types/IOlympicData'
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model'
@@ -39,14 +40,28 @@ const Grid = () => {
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState<IOlympicData[]>()
 
-  const { update: updateUserLocation } = useLocations('update', () => {
-    if (gridRef.current?.api) {
-      var params = {
-        force: true,
+  const { update: updateUserLocation } = useLocations(
+    'update',
+    (updateLocation) => {
+      if (gridRef.current?.api && updateLocation.member.location) {
+        const params: RefreshCellsParams = {
+          force: true,
+        }
+
+        const { rowStartIndex } = updateLocation.member.location as UserLocation
+        const nodesLocation =
+          rowStartIndex &&
+          gridRef.current.api.getRowNode(rowStartIndex.toString())
+
+        if (nodesLocation) {
+          console.log('THE LOCATION', nodesLocation)
+          params.rowNodes = [nodesLocation]
+        }
+
+        gridRef.current.api.refreshCells(params)
       }
-      gridRef.current.api.refreshCells(params)
     }
-  })
+  )
 
   const getColumnDef = () => {
     return [
