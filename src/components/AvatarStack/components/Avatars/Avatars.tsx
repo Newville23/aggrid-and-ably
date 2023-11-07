@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { MAX_USERS_BEFORE_LIST } from '../../../../utils/constants'
 import { useMembers } from '@ably/spaces/react'
 import UserInfo from '../UserInfo/UserInfo'
+import { SpaceUser } from '../../../../types/SpaceUser'
 
 const getUserInitials = (userName: string): string => {
   if (!userName) return '...'
@@ -73,7 +74,7 @@ const Avatars = () => {
               ) : null}
               {hoveredClientId === anotherUser.clientId ? (
                 <div className="absolute top-10 truncate right-8 min-w-[175px] px-4 py-2 bg-black rounded-lg text-white">
-                  <UserInfo user={anotherUser} />
+                  <UserInfo user={anotherUser as SpaceUser} />
                 </div>
               ) : null}
             </div>

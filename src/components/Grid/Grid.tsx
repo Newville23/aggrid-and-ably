@@ -18,6 +18,7 @@ import { MenuModule } from '@ag-grid-enterprise/menu'
 import { ClipboardModule } from '@ag-grid-enterprise/clipboard'
 import CustomCellRender from './components/CustomCellRender'
 import { useLocations } from '@ably/spaces/react'
+import { UserLocation } from '../../types/SpaceUser'
 
 // Register the required feature modules with the Grid
 ModuleRegistry.registerModules([
@@ -30,6 +31,14 @@ ModuleRegistry.registerModules([
 const GRID_COMPONENT = 'grid'
 
 const Grid = () => {
+  {
+    /** 💡 basic Ag-grid configuration 💡 */
+  }
+  const gridRef = useRef<AgGridReact<IOlympicData>>(null)
+  const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), [])
+  const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
+  const [rowData, setRowData] = useState<IOlympicData[]>()
+
   const { update: updateUserLocation } = useLocations('update', () => {
     if (gridRef.current?.api) {
       var params = {
@@ -38,14 +47,6 @@ const Grid = () => {
       gridRef.current.api.refreshCells(params)
     }
   })
-
-  {
-    /** 💡 basic Ag-grid configuration 💡 */
-  }
-  const gridRef = useRef<AgGridReact<IOlympicData>>(null)
-  const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), [])
-  const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
-  const [rowData, setRowData] = useState<IOlympicData[]>()
 
   const getColumnDef = () => {
     return [
@@ -112,7 +113,7 @@ const Grid = () => {
         if (updateUserLocation && cellRanges && cellRanges.length > 0) {
           const lastRange = cellRanges[cellRanges?.length - 1]
           const { endRow, startRow, columns } = lastRange
-          const userGridLocation = {
+          const userGridLocation: UserLocation = {
             component: GRID_COMPONENT,
             rowStartIndex: startRow?.rowIndex,
             rowEndIndex: endRow?.rowIndex,

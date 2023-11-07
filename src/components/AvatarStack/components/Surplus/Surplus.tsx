@@ -4,6 +4,7 @@ import useClickOutsideList from '../../useClickOutsideList'
 import { MAX_USERS_BEFORE_LIST } from '../../../../utils/constants'
 import { useMembers } from '@ably/spaces/react'
 import UserInfo from '../UserInfo'
+import { type SpaceUser } from '../../../../types/SpaceUser'
 
 const Surplus = () => {
   const { others } = useMembers()
@@ -38,7 +39,7 @@ const Surplus = () => {
               className="hover:bg-slate-700 hover:rounded-lg px-7 py-2"
               key={anotherUser.clientId}
             >
-              <UserInfo user={anotherUser} />
+              <UserInfo user={anotherUser as SpaceUser} />
             </div>
           ))}
         </div>

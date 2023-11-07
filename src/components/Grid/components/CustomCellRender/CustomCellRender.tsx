@@ -1,5 +1,6 @@
 import { ICellRendererParams } from '@ag-grid-community/core'
 import { useMembers } from '@ably/spaces/react'
+import { UserLocation } from '../../../../types/SpaceUser'
 
 const CustomCellRender = (props: ICellRendererParams) => {
   const { others } = useMembers()
@@ -10,11 +11,11 @@ const CustomCellRender = (props: ICellRendererParams) => {
     (anotherUser) => anotherUser.isConnected && anotherUser.location
   )
 
-  const otherUserLocation = otherUsersWithLocation.find(
-    (user) =>
-      rowIndex === user.location?.rowEndIndex &&
-      colDef?.field === user.location?.columnEnd
-  )
+  const otherUserLocation = otherUsersWithLocation.find((user) => {
+    const { rowEndIndex: userRowEndIndex, columnEnd: userColumnEnd } =
+      user.location as UserLocation
+    return rowIndex === userRowEndIndex && colDef?.field === userColumnEnd
+  })
 
   const cellBasicClass = 'relative h-full w-full'
   const cellClass = otherUserLocation ? `border-solid border-2` : ''

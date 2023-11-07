@@ -6,7 +6,7 @@ import AvatarStack from '../AvatarStack/AvatarStack'
 import { colors } from '../../utils/fakeData'
 import { faker } from '@faker-js/faker'
 import Grid from '../Grid'
-import { type UserProfileData } from '../../types/userProfileData'
+import { type UserProfileData } from '../../types/SpaceUser'
 
 const getRdmColor = () => colors[Math.floor(Math.random() * colors.length)]
 
