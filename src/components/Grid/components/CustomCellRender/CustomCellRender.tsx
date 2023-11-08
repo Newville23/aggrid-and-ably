@@ -1,41 +1,47 @@
 import { ICellRendererParams } from '@ag-grid-community/core'
-import getOthersOnlineUsersPointer from '../../../../utils/getOnlineUsersData'
-
-import type onlineUser from '../../../../types/onlineUser'
+import { useMembers } from '@ably/spaces/react'
+import { UserLocation } from '../../../../types/SpaceUser'
 
 const CustomCellRender = (props: ICellRendererParams) => {
-  const { context, rowIndex, colDef } = props
+  const { others } = useMembers()
+  const { rowIndex, colDef } = props
+
   const cellValue = props.valueFormatted ? props.valueFormatted : props.value
-  const othersOnlineUsersPointer = getOthersOnlineUsersPointer(
-    context.onlineUsers,
-    context.clientId
+  const otherUsersWithLocation = others.filter(
+    (anotherUser) => anotherUser.isConnected && anotherUser.location
   )
 
-  const userPointerInCell = othersOnlineUsersPointer.find(
-    (user: onlineUser) =>
-      rowIndex === user.data?.pointer?.rowEndIndex &&
-      colDef?.field === user.data?.pointer?.columnEnd
-  )
+  const otherUserLocation = otherUsersWithLocation.find((user) => {
+    const { rowEndIndex: userRowEndIndex, columnEnd: userColumnEnd } =
+      user.location as UserLocation
+    return rowIndex === userRowEndIndex && colDef?.field === userColumnEnd
+  })
+
   const cellBasicClass = 'relative h-full w-full'
+  const cellClass = otherUserLocation ? `border-solid border-2` : ''
+  let userName = '...'
+  let cellColor = 'inherit'
 
-  const cellClass = userPointerInCell ? `border-solid border-2` : ''
+  if (otherUserLocation && otherUserLocation.profileData) {
+    userName = otherUserLocation.profileData.userName as string
+    cellColor = otherUserLocation.profileData.avatarColor as string
+  }
 
-  const userNameForPointer = userPointerInCell?.data.name
   return (
     <div
       className={`${cellBasicClass} ${cellClass}`}
       style={{
-        borderColor: userPointerInCell ? userPointerInCell.color : 'inherit',
+        borderColor: cellColor,
         paddingRight: '17px',
         paddingLeft: '17px',
       }}
     >
-      {userNameForPointer && (
+      {otherUserLocation && (
         <div
           className="absolute z-50 text-white -top-5 -right-0.5 leading-4 py-0.5 px-2.5 rounded-t"
-          style={{ backgroundColor: userPointerInCell.color }}
+          style={{ backgroundColor: cellColor }}
         >
-          {userNameForPointer}
+          {userName}
         </div>
       )}
       <span>{cellValue}</span>
