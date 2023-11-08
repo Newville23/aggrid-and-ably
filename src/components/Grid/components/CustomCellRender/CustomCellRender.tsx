@@ -27,7 +27,6 @@ const CustomCellRender = (props: ICellRendererParams) => {
     cellColor = otherUserLocation.profileData.avatarColor as string
   }
 
-  const userNameForPointer = userPointerInCell?.data.name
   return (
     <div
       className={`${cellBasicClass} ${cellClass}`}
